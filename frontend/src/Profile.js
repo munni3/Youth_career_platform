@@ -26,7 +26,6 @@ const Profile = () => {
   const [userApplications, setUserApplications] = useState([]);
   const [currentQuote, setCurrentQuote] = useState('');
 
-  // Motivational quotes for profile
   const motivationalQuotes = [
     "Your profile is your personal brand. Make it shine!",
     "Great careers are built on great profiles. Keep yours updated!",
@@ -46,10 +45,8 @@ const Profile = () => {
 
         setLoading(true);
 
-        // Set initial quote
         setCurrentQuote(motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)]);
 
-        // Get fresh user from backend
         const res = await axios.get('http://localhost:5000/api/profile', {
           headers: { Authorization: `Bearer ${token}` }
         });
@@ -69,10 +66,8 @@ const Profile = () => {
         });
         setExperience(userObj.experience || []);
 
-        // Update localStorage
         localStorage.setItem('user', JSON.stringify(userObj));
 
-        // Fetch applications
         await fetchApplications();
       } catch (error) {
         console.error('Error loading user data:', error);
@@ -88,7 +83,6 @@ const Profile = () => {
 
     loadUserData();
 
-    // Rotate quotes every 10 seconds
     const quoteInterval = setInterval(() => {
       setCurrentQuote(motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)]);
     }, 10000);
@@ -187,7 +181,6 @@ const Profile = () => {
 
   return (
     <div className="profile-container">
-      {/* Header Section */}
       <header className="profile-header">
         <div className="header-background"></div>
         <div className="profile-header-content">
@@ -201,13 +194,11 @@ const Profile = () => {
         </div>
       </header>
 
-      {/* Motivational Quote */}
       <div className="quote-section">
         <p className="quote-text">"{currentQuote}"</p>
         <p className="quote-author">- CareerConnect Team</p>
       </div>
 
-      {/* Action Buttons */}
       <div className="profile-actions-section">
         <div className="profile-actions">
           <button
@@ -231,7 +222,6 @@ const Profile = () => {
         </div>
       </div>
 
-      {/* Applied Jobs Section */}
       {showApplications && (
         <div className="applications-section">
           <div className="section-header">
@@ -290,12 +280,9 @@ const Profile = () => {
         </div>
       )}
 
-      {/* Profile Content */}
       <div className="profile-content">
         {editing ? (
-          /* EDIT MODE */
           <div className="edit-profile-form">
-            {/* Personal Information */}
             <div className="profile-section">
               <div className="section-header">
                 <h3><i className="fas fa-user"></i> Personal Information</h3>
@@ -382,7 +369,6 @@ const Profile = () => {
               </div>
             </div>
 
-            {/* Skills & Interests */}
             <div className="profile-section">
               <div className="section-header">
                 <h3><i className="fas fa-star"></i> Skills & Career Interests</h3>
@@ -414,7 +400,6 @@ const Profile = () => {
               </div>
             </div>
 
-            {/* Projects & Experience */}
             <div className="profile-section">
               <div className="section-header">
                 <h3><i className="fas fa-briefcase"></i> Projects & Experience</h3>
@@ -461,7 +446,6 @@ const Profile = () => {
                 </button>
               </div>
               
-              {/* Experience List */}
               <div className="experience-list">
                 {experience.length > 0 ? (
                   experience.map((exp, index) => (
@@ -488,7 +472,6 @@ const Profile = () => {
               </div>
             </div>
 
-            {/* CV Text */}
             <div className="profile-section">
               <div className="section-header">
                 <h3><i className="fas fa-file-alt"></i> CV / Additional Notes</h3>
@@ -524,9 +507,7 @@ const Profile = () => {
             </button>
           </div>
         ) : (
-          /* VIEW MODE */
           <div className="view-profile">
-            {/* Personal Information */}
             <div className="profile-section">
               <div className="section-header">
                 <h3><i className="fas fa-user"></i> Personal Information</h3>
@@ -555,7 +536,6 @@ const Profile = () => {
               </div>
             </div>
 
-            {/* Skills */}
             <div className="profile-section">
               <div className="section-header">
                 <h3><i className="fas fa-star"></i> Skills</h3>
@@ -576,7 +556,6 @@ const Profile = () => {
               </div>
             </div>
 
-            {/* Career Interests */}
             {user.careerInterests?.length > 0 && (
               <div className="profile-section">
                 <div className="section-header">
@@ -592,7 +571,6 @@ const Profile = () => {
               </div>
             )}
 
-            {/* Projects & Experience */}
             <div className="profile-section">
               <div className="section-header">
                 <h3><i className="fas fa-briefcase"></i> Projects & Experience</h3>
@@ -617,7 +595,6 @@ const Profile = () => {
               </div>
             </div>
 
-            {/* CV Text */}
             {user.cvText && (
               <div className="profile-section">
                 <div className="section-header">
