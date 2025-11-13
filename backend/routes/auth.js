@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const router = express.Router();
 
-// Register
+
 router.post('/register', async (req, res) => {
   try {
     const { 
@@ -20,13 +20,13 @@ router.post('/register', async (req, res) => {
       careerInterests 
     } = req.body;
     
-    // Check if user exists
+    
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: 'User already exists with this email' });
     }
 
-    // Create user
+   
     const user = await User.create({
       name,
       email,
@@ -41,7 +41,7 @@ router.post('/register', async (req, res) => {
       experience: []
     });
 
-    // Create token
+    
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET || 'fallback-secret', { expiresIn: '7d' });
 
     res.status(201).json({ 
@@ -64,7 +64,7 @@ router.post('/register', async (req, res) => {
   }
 });
 
-// Login
+
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;

@@ -7,7 +7,7 @@ const resourceSchema = new mongoose.Schema({
   relatedSkills: [String],
   cost: { type: String, enum: ['Free', 'Paid'] },
   description: String,
-  enrolledCount: { type: Number, default: 0 } // FIXED: Added default value 0
+  enrolledCount: { type: Number, default: 0 } 
 }, { timestamps: true });
 
 module.exports = mongoose.model('Resource', resourceSchema);

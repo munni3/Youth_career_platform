@@ -26,7 +26,7 @@ const Profile = () => {
   const [userApplications, setUserApplications] = useState([]);
   const [currentQuote, setCurrentQuote] = useState('');
 
-  // Motivational quotes for profile
+  
   const motivationalQuotes = [
     "Your profile is your personal brand. Make it shine!",
     "Great careers are built on great profiles. Keep yours updated!",
@@ -46,10 +46,10 @@ const Profile = () => {
 
         setLoading(true);
 
-        // Set initial quote
+        
         setCurrentQuote(motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)]);
 
-        // Get fresh user from backend
+        
         const res = await axios.get('http://localhost:5000/api/profile', {
           headers: { Authorization: `Bearer ${token}` }
         });
@@ -69,10 +69,10 @@ const Profile = () => {
         });
         setExperience(userObj.experience || []);
 
-        // Update localStorage
+        
         localStorage.setItem('user', JSON.stringify(userObj));
 
-        // Fetch applications
+        
         await fetchApplications();
       } catch (error) {
         console.error('Error loading user data:', error);
@@ -88,13 +88,13 @@ const Profile = () => {
 
     loadUserData();
 
-    // Rotate quotes every 10 seconds
+    
     const quoteInterval = setInterval(() => {
       setCurrentQuote(motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)]);
     }, 10000);
     
     return () => clearInterval(quoteInterval);
-  }, []);
+   }, []);
 
   const fetchApplications = async () => {
     try {
