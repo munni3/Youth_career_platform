@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-// Move InputField component outside to prevent re-creation on every render
+
 const InputField = React.memo(({ 
   label, 
   type = 'text', 

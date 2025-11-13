@@ -4,7 +4,7 @@ const User = require('../models/User');
 const Job = require('../models/Job');
 const router = express.Router();
 
-// Apply for a job
+
 router.post('/apply', auth, async (req, res) => {
   try {
     const { jobId, notes } = req.body;
@@ -15,13 +15,12 @@ router.post('/apply', auth, async (req, res) => {
       return res.status(404).json({ message: 'Job not found' });
     }
 
-    // Check if already applied
+    
     const alreadyApplied = user.applications.find(app => app.jobId.toString() === jobId);
     if (alreadyApplied) {
       return res.status(400).json({ message: 'You have already applied for this job' });
     }
 
-    // Add to applications
     user.applications.push({
       jobId: job._id,
       jobTitle: job.title,
@@ -41,7 +40,7 @@ router.post('/apply', auth, async (req, res) => {
   }
 });
 
-// Get user's applications
+
 router.get('/my-applications', auth, async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
@@ -51,7 +50,7 @@ router.get('/my-applications', auth, async (req, res) => {
   }
 });
 
-// Update application status
+
 router.put('/:applicationId/status', auth, async (req, res) => {
   try {
     const { status } = req.body;
