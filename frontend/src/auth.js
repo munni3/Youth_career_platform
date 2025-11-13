@@ -142,13 +142,13 @@ const InputField = React.memo(({
               e.target.style.backgroundColor = 'transparent';
             }}
           >
-            {type === 'password' ? '👁️' : '👁️‍🗨️'}
+            {type === 'password' ? '👁' : '👁‍🗨'}
           </button>
         )}
       </div>
       {error && (
         <div style={{ color: '#dc3545', fontSize: '14px', marginTop: '5px' }}>
-          ⚠️ {error}
+          ⚠ {error}
         </div>
       )}
     </div>
@@ -175,6 +175,36 @@ const Auth = () => {
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [passwordStrength, setPasswordStrength] = useState({
+    score: 0,
+    feedback: ''
+  });
+
+  // Password strength checker
+  const checkPasswordStrength = (password) => {
+    let score = 0;
+    let feedback = [];
+
+    if (password.length >= 8) score += 1;
+    else feedback.push('at least 8 characters');
+
+    if (/[A-Z]/.test(password)) score += 1;
+    else feedback.push('one uppercase letter');
+
+    if (/[a-z]/.test(password)) score += 1;
+    else feedback.push('one lowercase letter');
+
+    if (/[0-9]/.test(password)) score += 1;
+    else feedback.push('one number');
+
+    if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) score += 1;
+    else feedback.push('one special character');
+
+    return {
+      score,
+      feedback: feedback.length > 0 ? `Include: ${feedback.join(', ')}` : 'Strong password!'
+    };
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -182,6 +212,11 @@ const Auth = () => {
       ...prev,
       [name]: value
     }));
+    
+    // Check password strength in real-time
+    if (name === 'password' && !isLogin) {
+      setPasswordStrength(checkPasswordStrength(value));
+    }
     
     // Clear error when user starts typing
     if (errors[name]) {
@@ -211,11 +246,17 @@ const Auth = () => {
       newErrors.email = 'Please enter a valid email address';
     }
 
-    // Password validation
+    // Password validation with strong requirements
     if (!formData.password) {
       newErrors.password = 'Password is required';
-    } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters long';
+    } else if (formData.password.length < 8) {
+      newErrors.password = 'Password must be at least 8 characters long';
+    } else if (!isLogin) {
+      // Strong password validation for registration only
+      const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+      if (!strongPasswordRegex.test(formData.password)) {
+        newErrors.password = 'Password must include uppercase, lowercase letters and numbers';
+      }
     }
 
     // Registration-specific validations
@@ -319,12 +360,21 @@ const Auth = () => {
     setMessage('');
     setShowPassword(false);
     setShowConfirmPassword(false);
+    setPasswordStrength({ score: 0, feedback: '' });
   };
 
   const switchMode = () => {
     const newIsLogin = !isLogin;
     setIsLogin(newIsLogin);
     resetForm();
+  };
+
+  // Get password strength color
+  const getPasswordStrengthColor = () => {
+    if (passwordStrength.score === 0) return '#dc3545';
+    if (passwordStrength.score <= 2) return '#ffc107';
+    if (passwordStrength.score <= 4) return '#17a2b8';
+    return '#28a745';
   };
 
   return (
@@ -504,18 +554,68 @@ const Auth = () => {
             onChange={handleChange}
           />
 
-          <InputField
-            label="Password"
-            type={showPassword ? 'text' : 'password'}
-            name="password"
-            placeholder="Enter your password (min 6 characters)"
-            required
-            value={formData.password}
-            error={errors.password}
-            onChange={handleChange}
-            showPasswordToggle={true}
-            onTogglePasswordVisibility={togglePasswordVisibility}
-          />
+          <div>
+            <InputField
+              label="Password"
+              type={showPassword ? 'text' : 'password'}
+              name="password"
+              placeholder={isLogin ? "Enter your password" : "Create strong password (min 8 characters with numbers)"}
+              required
+              value={formData.password}
+              error={errors.password}
+              onChange={handleChange}
+              showPasswordToggle={true}
+              onTogglePasswordVisibility={togglePasswordVisibility}
+            />
+            
+            {/* Password strength indicator for registration */}
+            {!isLogin && formData.password && (
+              <div style={{ 
+                marginTop: '8px',
+                padding: '8px 12px',
+                borderRadius: '6px',
+                backgroundColor: '#f8f9fa',
+                border: `1px solid ${getPasswordStrengthColor()}`,
+                fontSize: '13px'
+              }}>
+                <div style={{ 
+                  display: 'flex', 
+                  justifyContent: 'space-between', 
+                  alignItems: 'center',
+                  marginBottom: '4px'
+                }}>
+                  <span style={{ fontWeight: 'bold', color: getPasswordStrengthColor() }}>
+                    Password Strength: 
+                    {passwordStrength.score <= 2 ? ' Weak' : 
+                     passwordStrength.score <= 4 ? ' Good' : ' Strong'}
+                  </span>
+                  <div style={{ 
+                    display: 'flex', 
+                    gap: '2px'
+                  }}>
+                    {[1, 2, 3, 4, 5].map((index) => (
+                      <div
+                        key={index}
+                        style={{
+                          width: '20px',
+                          height: '4px',
+                          borderRadius: '2px',
+                          backgroundColor: index <= passwordStrength.score ? 
+                            getPasswordStrengthColor() : '#e9ecef'
+                        }}
+                      />
+                    ))}
+                  </div>
+                </div>
+                <div style={{ 
+                  color: passwordStrength.score >= 4 ? '#28a745' : '#6c757d',
+                  fontSize: '12px'
+                }}>
+                  💡 {passwordStrength.feedback}
+                </div>
+              </div>
+            )}
+          </div>
 
           {!isLogin && (
             <InputField
@@ -624,7 +724,7 @@ const Auth = () => {
             textAlign: 'center',
             boxShadow: '0 4px 12px rgba(240, 147, 251, 0.3)'
           }}>
-            <strong>💡 Pro Tip:</strong> Fill in your skills and career interests to get personalized job recommendations!
+            <strong>🔒 Password Requirements:</strong> Minimum 8 characters with uppercase, lowercase letters and numbers
           </div>
         )}
       </div>
