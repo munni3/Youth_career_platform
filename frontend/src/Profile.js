@@ -26,10 +26,6 @@ const Profile = () => {
   const [userApplications, setUserApplications] = useState([]);
   const [currentQuote, setCurrentQuote] = useState('');
 
-<<<<<<< HEAD
-=======
-  
->>>>>>> 86f76401f4a5fa339d1ce23f2c4aa1a23c71e664
   const motivationalQuotes = [
     "Your profile is your personal brand. Make it shine!",
     "Great careers are built on great profiles. Keep yours updated!",
@@ -49,15 +45,8 @@ const Profile = () => {
 
         setLoading(true);
 
-<<<<<<< HEAD
         setCurrentQuote(motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)]);
 
-=======
-        
-        setCurrentQuote(motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)]);
-
-        
->>>>>>> 86f76401f4a5fa339d1ce23f2c4aa1a23c71e664
         const res = await axios.get('http://localhost:5000/api/profile', {
           headers: { Authorization: `Bearer ${token}` }
         });
@@ -77,15 +66,8 @@ const Profile = () => {
         });
         setExperience(userObj.experience || []);
 
-<<<<<<< HEAD
         localStorage.setItem('user', JSON.stringify(userObj));
 
-=======
-        
-        localStorage.setItem('user', JSON.stringify(userObj));
-
-        
->>>>>>> 86f76401f4a5fa339d1ce23f2c4aa1a23c71e664
         await fetchApplications();
       } catch (error) {
         console.error('Error loading user data:', error);
@@ -101,16 +83,12 @@ const Profile = () => {
 
     loadUserData();
 
-<<<<<<< HEAD
-=======
-    
->>>>>>> 86f76401f4a5fa339d1ce23f2c4aa1a23c71e664
     const quoteInterval = setInterval(() => {
       setCurrentQuote(motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)]);
     }, 10000);
     
     return () => clearInterval(quoteInterval);
-   }, []);
+  }, []);
 
   const fetchApplications = async () => {
     try {
